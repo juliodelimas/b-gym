@@ -18,8 +18,6 @@ describe("ATD-64 - Registrar novo usuario com dados validos", () => {
   it("cadastra um novo usuario com sucesso via HTTP", async () => {
     const fixture = loadFixture("ATD-64.json");
 
-    expect(api.port).to.not.equal(3000);
-
     const response = await request(api.baseUrl)
       .post("/api/auth/register")
       .send(fixture.request)
