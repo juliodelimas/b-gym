@@ -1,4 +1,6 @@
-# B-Gym
+# B-Gym*
+
+<img width="1916" height="964" alt="image" src="https://github.com/user-attachments/assets/26fb8989-7b8a-481d-bd27-c4d0dfa159d2" />
 
 Projeto full stack do B-Gym com:
 
@@ -9,6 +11,8 @@ Projeto full stack do B-Gym com:
 - Automação de testes Web com Cypress
 
 O contrato principal da API está definido em [`./docs/swagger.yaml`](./docs/swagger.yaml).
+
+(*) Projeto criado em aula com uso do Codex, B-Gym vem de Bortolato's Gym, pois durante a aula eu pedi aos alunos que propossem ideias de um software que eu construiria ao vivo com uso de IA Generativa e a ideia do aluno Lucas Bortolato foi a mais votada: um aplicativo de tracking de treino diário.
 
 ## Requisitos
 
