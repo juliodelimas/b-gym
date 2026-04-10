@@ -110,6 +110,7 @@ O repositório possui um workflow do GitHub Actions em [`.github/workflows/ci.ym
 
 Ele executa:
 
+- `npm install`
 - `npm run test:api`
 - `npm run test:web`
 
