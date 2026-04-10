@@ -1,0 +1,673 @@
+openapi: 3.0.3
+info:
+  title: B-Gym Daily Workout API
+  version: 1.0.0
+  description: |
+    Especificacao OpenAPI da API REST do backend do aplicativo B-Gym, derivada do epico
+    ATD-53 e das historias ATD-54 a ATD-63.
+
+    Regras de negocio principais:
+    - Cadastro de usuario com nome, e-mail unico e senha.
+    - Autenticacao por e-mail e senha.
+    - Exibicao automatica do treino do dia apos login.
+    - Ciclo fixo de 3 dias: Dia 1 = superiores, Dia 2 = inferiores, Dia 3 = cardio.
+    - Ao finalizar o Dia 3, o ciclo reinicia no Dia 1.
+    - Cada dia possui lista fixa de exercicios.
+    - O usuario pode marcar exercicios como concluidos.
+    - O progresso do dia deve ser persistido e restaurado no mesmo dia.
+    - Quando um novo dia de ciclo iniciar, o progresso do treino anterior deve ser reiniciado.
+servers:
+  - url: http://localhost:3000/api
+    description: Ambiente local
+tags:
+  - name: Auth
+    description: Registro e autenticacao do usuario
+  - name: Workout
+    description: Consulta do treino do dia e detalhes dos exercicios
+  - name: Progress
+    description: Persistencia e acompanhamento do progresso diario
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registrar novo usuario
+      description: Cria uma nova conta para acesso ao aplicativo.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              default:
+                value:
+                  name: Maria Silva
+                  email: maria.silva@example.com
+                  password: StrongPass123
+      responses:
+        '201':
+          description: Usuario cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+              examples:
+                success:
+                  value:
+                    message: Usuario cadastrado com sucesso.
+                    user:
+                      id: 3d20f09f-7fda-482d-8f76-1ed22c5ac952
+                      name: Maria Silva
+                      email: maria.silva@example.com
+                      createdAt: '2026-04-09T20:10:00Z'
+        '409':
+          description: E-mail ja cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                duplicatedEmail:
+                  value:
+                    code: EMAIL_ALREADY_REGISTERED
+                    message: Ja existe um usuario cadastrado com este e-mail.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Autenticar usuario
+      description: Autentica o usuario com e-mail e senha e retorna token para acesso aos endpoints protegidos.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              default:
+                value:
+                  email: maria.silva@example.com
+                  password: StrongPass123
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              examples:
+                success:
+                  value:
+                    accessToken: jwt-access-token
+                    tokenType: Bearer
+                    expiresIn: 3600
+                    user:
+                      id: 3d20f09f-7fda-482d-8f76-1ed22c5ac952
+                      name: Maria Silva
+                      email: maria.silva@example.com
+        '401':
+          description: Credenciais invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidCredentials:
+                  value:
+                    code: INVALID_CREDENTIALS
+                    message: E-mail ou senha invalidos.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /me/workout/today:
+    get:
+      tags:
+        - Workout
+      summary: Obter treino do dia
+      description: |
+        Retorna o treino correspondente ao dia atual do ciclo do usuario autenticado.
+        A resposta inclui foco do treino, lista fixa de exercicios do dia e progresso atual.
+      operationId: getTodayWorkout
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Treino do dia retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodayWorkoutResponse'
+              examples:
+                day1:
+                  value:
+                    date: '2026-04-09'
+                    cycle:
+                      length: 3
+                      currentDay: 1
+                      nextDay: 2
+                      resetsAfterDay: 3
+                    workout:
+                      id: day-1
+                      name: Treino do Dia
+                      focus: superiores
+                      focusLabel: Superiores
+                      exercises:
+                        - id: supino-reto
+                          name: Supino reto
+                          sets: 4
+                          reps: '10'
+                          notes: Controle a descida do movimento.
+                          completed: true
+                          completedAt: '2026-04-09T19:10:00Z'
+                        - id: puxada-frontal
+                          name: Puxada frontal
+                          sets: 4
+                          reps: '12'
+                          notes: null
+                          completed: false
+                          completedAt: null
+                        - id: desenvolvimento-halteres
+                          name: Desenvolvimento com halteres
+                          sets: 3
+                          reps: '12'
+                          notes: null
+                          completed: false
+                          completedAt: null
+                        - id: remada-baixa
+                          name: Remada baixa
+                          sets: 3
+                          reps: '12'
+                          notes: null
+                          completed: false
+                          completedAt: null
+                        - id: rosca-direta
+                          name: Rosca direta
+                          sets: 3
+                          reps: '12'
+                          notes: null
+                          completed: false
+                          completedAt: null
+                        - id: triceps-pulley
+                          name: Triceps pulley
+                          sets: 3
+                          reps: '12'
+                          notes: null
+                          completed: false
+                          completedAt: null
+                    progress:
+                      completedCount: 1
+                      totalCount: 6
+                      percentage: 16.67
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /me/workout/today/progress:
+    get:
+      tags:
+        - Progress
+      summary: Obter progresso do treino do dia
+      description: Retorna apenas o resumo de progresso do treino atual do usuario autenticado.
+      operationId: getTodayWorkoutProgress
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Progresso retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutProgressResponse'
+              examples:
+                progress:
+                  value:
+                    date: '2026-04-09'
+                    workoutId: day-1
+                    focus: superiores
+                    completedCount: 3
+                    totalCount: 6
+                    percentage: 50
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /me/workout/today/exercises/{exerciseId}:
+    get:
+      tags:
+        - Workout
+      summary: Obter detalhes de um exercicio do treino atual
+      description: Retorna os detalhes basicos de um exercicio do treino do dia do usuario autenticado.
+      operationId: getTodayExercise
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExerciseId'
+      responses:
+        '200':
+          description: Exercicio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseDetailResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /me/workout/today/exercises/{exerciseId}/completion:
+    put:
+      tags:
+        - Progress
+      summary: Atualizar status de conclusao de um exercicio
+      description: |
+        Marca ou desmarca um exercicio do treino atual como concluido.
+        A alteracao deve refletir imediatamente no progresso do dia e ser persistida.
+      operationId: updateExerciseCompletion
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExerciseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateExerciseCompletionRequest'
+            examples:
+              complete:
+                value:
+                  completed: true
+              uncomplete:
+                value:
+                  completed: false
+      responses:
+        '200':
+          description: Status do exercicio atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateExerciseCompletionResponse'
+              examples:
+                completed:
+                  value:
+                    exercise:
+                      id: supino-reto
+                      name: Supino reto
+                      sets: 4
+                      reps: '10'
+                      notes: Controle a descida do movimento.
+                      completed: true
+                      completedAt: '2026-04-09T19:10:00Z'
+                    progress:
+                      completedCount: 4
+                      totalCount: 6
+                      percentage: 66.67
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ExerciseId:
+      name: exerciseId
+      in: path
+      required: true
+      description: Identificador unico do exercicio dentro da lista fixa do treino atual.
+      schema:
+        type: string
+        example: supino-reto
+
+  responses:
+    UnauthorizedError:
+      description: Token ausente, invalido ou expirado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            unauthorized:
+              value:
+                code: UNAUTHORIZED
+                message: Acesso nao autorizado.
+    NotFoundError:
+      description: Recurso nao encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            notFound:
+              value:
+                code: RESOURCE_NOT_FOUND
+                message: Recurso nao encontrado.
+    ValidationError:
+      description: Dados de entrada invalidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          examples:
+            invalidBody:
+              value:
+                code: VALIDATION_ERROR
+                message: Existem erros de validacao na requisicao.
+                details:
+                  - field: email
+                    message: O campo e-mail deve conter um endereco valido.
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 120
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+
+    RegisterResponse:
+      type: object
+      required:
+        - message
+        - user
+      properties:
+        message:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+
+    LoginResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          format: int32
+          example: 3600
+        user:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        createdAt:
+          type: string
+          format: date-time
+
+    TodayWorkoutResponse:
+      type: object
+      required:
+        - date
+        - cycle
+        - workout
+        - progress
+      properties:
+        date:
+          type: string
+          format: date
+        cycle:
+          $ref: '#/components/schemas/CycleInfo'
+        workout:
+          $ref: '#/components/schemas/Workout'
+        progress:
+          $ref: '#/components/schemas/WorkoutProgress'
+
+    CycleInfo:
+      type: object
+      required:
+        - length
+        - currentDay
+        - nextDay
+        - resetsAfterDay
+      properties:
+        length:
+          type: integer
+          example: 3
+        currentDay:
+          type: integer
+          minimum: 1
+          maximum: 3
+        nextDay:
+          type: integer
+          minimum: 1
+          maximum: 3
+        resetsAfterDay:
+          type: integer
+          example: 3
+
+    Workout:
+      type: object
+      required:
+        - id
+        - name
+        - focus
+        - focusLabel
+        - exercises
+      properties:
+        id:
+          type: string
+          example: day-1
+        name:
+          type: string
+          example: Treino do Dia
+        focus:
+          type: string
+          enum:
+            - superiores
+            - inferiores
+            - cardio
+        focusLabel:
+          type: string
+          example: Superiores
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+
+    Exercise:
+      type: object
+      required:
+        - id
+        - name
+        - sets
+        - reps
+        - completed
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sets:
+          type: integer
+          minimum: 1
+        reps:
+          type: string
+          example: '12'
+        notes:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    WorkoutProgress:
+      type: object
+      required:
+        - completedCount
+        - totalCount
+        - percentage
+      properties:
+        completedCount:
+          type: integer
+          minimum: 0
+        totalCount:
+          type: integer
+          minimum: 0
+        percentage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+
+    WorkoutProgressResponse:
+      type: object
+      required:
+        - date
+        - workoutId
+        - focus
+        - completedCount
+        - totalCount
+        - percentage
+      properties:
+        date:
+          type: string
+          format: date
+        workoutId:
+          type: string
+        focus:
+          type: string
+          enum:
+            - superiores
+            - inferiores
+            - cardio
+        completedCount:
+          type: integer
+        totalCount:
+          type: integer
+        percentage:
+          type: number
+          format: float
+
+    ExerciseDetailResponse:
+      type: object
+      required:
+        - date
+        - workoutId
+        - focus
+        - exercise
+      properties:
+        date:
+          type: string
+          format: date
+        workoutId:
+          type: string
+        focus:
+          type: string
+          enum:
+            - superiores
+            - inferiores
+            - cardio
+        exercise:
+          $ref: '#/components/schemas/Exercise'
+
+    UpdateExerciseCompletionRequest:
+      type: object
+      required:
+        - completed
+      properties:
+        completed:
+          type: boolean
+
+    UpdateExerciseCompletionResponse:
+      type: object
+      required:
+        - exercise
+        - progress
+      properties:
+        exercise:
+          $ref: '#/components/schemas/Exercise'
+        progress:
+          $ref: '#/components/schemas/WorkoutProgress'
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+    ValidationErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          properties:
+            details:
+              type: array
+              items:
+                $ref: '#/components/schemas/ValidationErrorDetail'
+
+    ValidationErrorDetail:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+        message:
+          type: string

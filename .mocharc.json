@@ -1,0 +1,15 @@
+{
+  "spec": [
+    "test/specs/**/*.spec.js"
+  ],
+  "timeout": 10000,
+  "reporter": "mochawesome",
+  "reporter-option": [
+    "reportDir=test/reports",
+    "reportFilename=api-test-report",
+    "html=true",
+    "json=true",
+    "quiet=true",
+    "overwrite=true"
+  ]
+}

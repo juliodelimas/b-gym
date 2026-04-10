@@ -1,0 +1,12 @@
+{
+  "request": {
+    "name": "Maria Silva",
+    "email": "maria.silva@example.com",
+    "password": "StrongPass123"
+  },
+  "expected": {
+    "status": 201,
+    "message": "Usuario cadastrado com sucesso.",
+    "email": "maria.silva@example.com"
+  }
+}

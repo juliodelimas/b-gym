@@ -1,0 +1,18 @@
+{
+  "registerRequest": {
+    "name": "Maria Silva",
+    "email": "maria.silva@example.com",
+    "password": "StrongPass123"
+  },
+  "loginRequest": {
+    "email": "maria.silva@example.com",
+    "password": "StrongPass123"
+  },
+  "expected": {
+    "status": 200,
+    "tokenType": "Bearer",
+    "expiresIn": 3600,
+    "email": "maria.silva@example.com",
+    "name": "Maria Silva"
+  }
+}

@@ -1,0 +1,138 @@
+const WORKOUT_DEFINITIONS = [
+  {
+    day: 1,
+    id: "day-1",
+    name: "Treino do Dia",
+    focus: "superiores",
+    focusLabel: "Superiores",
+    exercises: [
+      {
+        id: "supino-reto",
+        name: "Supino reto",
+        sets: 4,
+        reps: "10",
+        notes: "Controle a descida do movimento.",
+      },
+      {
+        id: "puxada-frontal",
+        name: "Puxada frontal",
+        sets: 4,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "desenvolvimento-halteres",
+        name: "Desenvolvimento com halteres",
+        sets: 3,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "remada-baixa",
+        name: "Remada baixa",
+        sets: 3,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "rosca-direta",
+        name: "Rosca direta",
+        sets: 3,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "triceps-pulley",
+        name: "Triceps pulley",
+        sets: 3,
+        reps: "12",
+        notes: null,
+      },
+    ],
+  },
+  {
+    day: 2,
+    id: "day-2",
+    name: "Treino do Dia",
+    focus: "inferiores",
+    focusLabel: "Inferiores",
+    exercises: [
+      {
+        id: "agachamento-livre",
+        name: "Agachamento livre",
+        sets: 4,
+        reps: "10",
+        notes: "Mantenha a coluna neutra durante toda a execucao.",
+      },
+      {
+        id: "leg-press",
+        name: "Leg press",
+        sets: 4,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "cadeira-extensora",
+        name: "Cadeira extensora",
+        sets: 3,
+        reps: "15",
+        notes: null,
+      },
+      {
+        id: "mesa-flexora",
+        name: "Mesa flexora",
+        sets: 3,
+        reps: "12",
+        notes: null,
+      },
+      {
+        id: "panturrilha-em-pe",
+        name: "Panturrilha em pe",
+        sets: 4,
+        reps: "15",
+        notes: null,
+      },
+    ],
+  },
+  {
+    day: 3,
+    id: "day-3",
+    name: "Treino do Dia",
+    focus: "cardio",
+    focusLabel: "Cardio",
+    exercises: [
+      {
+        id: "corrida-esteira",
+        name: "Corrida na esteira",
+        sets: 1,
+        reps: "20 min",
+        notes: "Aumente o ritmo gradualmente nos primeiros 5 minutos.",
+      },
+      {
+        id: "bicicleta-ergometrica",
+        name: "Bicicleta ergometrica",
+        sets: 1,
+        reps: "15 min",
+        notes: null,
+      },
+      {
+        id: "corda",
+        name: "Pular corda",
+        sets: 3,
+        reps: "2 min",
+        notes: null,
+      },
+      {
+        id: "abdominal-prancha",
+        name: "Prancha abdominal",
+        sets: 3,
+        reps: "45 s",
+        notes: null,
+      },
+    ],
+  },
+];
+
+module.exports = {
+  WORKOUT_DEFINITIONS,
+};

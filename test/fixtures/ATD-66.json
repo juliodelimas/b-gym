@@ -1,0 +1,13 @@
+{
+  "request": {
+    "name": "Ma",
+    "email": "maria.silva",
+    "password": "123"
+  },
+  "expected": {
+    "status": 422,
+    "code": "VALIDATION_ERROR",
+    "message": "Existem erros de validacao na requisicao.",
+    "detailFields": ["name", "email", "password"]
+  }
+}

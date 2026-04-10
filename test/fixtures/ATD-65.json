@@ -1,0 +1,17 @@
+{
+  "firstRequest": {
+    "name": "Maria Silva",
+    "email": "maria.silva@example.com",
+    "password": "StrongPass123"
+  },
+  "secondRequest": {
+    "name": "Maria Silva",
+    "email": "maria.silva@example.com",
+    "password": "StrongPass123"
+  },
+  "expected": {
+    "status": 409,
+    "code": "EMAIL_ALREADY_REGISTERED",
+    "message": "Ja existe um usuario cadastrado com este e-mail."
+  }
+}
