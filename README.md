@@ -1,7 +1,14 @@
-# B-Gym API
+# B-Gym
 
-API REST em JavaScript com Express e banco de dados em memoria para implementar o contrato definido em `./docs/swagger.yaml`.
-Agora o projeto tambem inclui uma aplicacao Web em React para cadastro, login e acompanhamento do treino diario.
+Projeto full stack do B-Gym com:
+
+- API REST em JavaScript com Express
+- Aplicação Web em React para cadastro, login e acompanhamento do treino diário
+- Documentação Swagger/OpenAPI
+- Automação de testes de API com Mocha, Chai e Supertest
+- Automação de testes Web com Cypress
+
+O contrato principal da API está definido em [`./docs/swagger.yaml`](./docs/swagger.yaml).
 
 ## Requisitos
 
@@ -16,15 +23,16 @@ npm run build
 npm start
 ```
 
-Servidor padrao:
+Serviços disponíveis por padrão:
 
-- `http://localhost:3000`
-- Aplicacao Web em `http://localhost:3000`
+- Aplicação Web em `http://localhost:3000`
 - Swagger renderizado em `http://localhost:3000/docs`
-- Swagger estatico em `http://localhost:3000/docs/swagger.yaml`
+- Swagger estático em `http://localhost:3000/docs/swagger.yaml`
 - Base da API em `http://localhost:3000/api`
 
-## Desenvolvimento do frontend
+## Desenvolvimento
+
+Para rodar a interface Web em modo de desenvolvimento:
 
 ```bash
 npm run dev:client
@@ -35,6 +43,47 @@ Para publicar a interface pelo Express, gere a build com:
 ```bash
 npm run build
 ```
+
+Para executar a API localmente em modo de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+## Testes automatizados
+
+Testes de API:
+
+```bash
+npm test
+```
+
+Ou diretamente:
+
+```bash
+npm run test:api
+```
+
+Testes Web end-to-end:
+
+```bash
+npm run test:web
+```
+
+Para abrir o Cypress em modo interativo:
+
+```bash
+npm run test:web:open
+```
+
+## Estrutura do projeto
+
+- `src/`: Backend da API, regras de negócio, middleware e servidor Express
+- `web/`: Aplicação Web em React
+- `test/`: Automação de testes de API, fixtures e helpers
+- `cypress/`: Automação de testes Web
+- `docs/`: Especificação Swagger/OpenAPI
+- `scripts/`: Scripts auxiliares de execução
 
 ## Endpoints implementados
 
@@ -47,8 +96,8 @@ npm run build
 
 ## Regras implementadas
 
-- cadastro com e-mail unico
-- autenticacao com bearer token JWT
-- ciclo fixo de 3 dias: superiores, inferiores e cardio
-- progresso diario persistido em memoria por usuario
-- reinicio automatico do progresso quando um novo dia do ciclo inicia
+- Cadastro com e-mail único
+- Autenticação com bearer token JWT
+- Ciclo fixo de 3 dias: superiores, inferiores e cardio
+- Progresso diário persistido em memória por usuário
+- Reinício automático do progresso quando um novo dia do ciclo inicia
