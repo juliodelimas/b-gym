@@ -19,7 +19,7 @@ O contrato principal da API está definido em [`./docs/swagger.yaml`](./docs/swa
 
 ```bash
 npm install
-npm run build
+npm run build:web
 npm start
 ```
 
@@ -35,7 +35,7 @@ Serviços disponíveis por padrão:
 Para rodar a interface Web em modo de desenvolvimento:
 
 ```bash
-npm run dev:client
+npm run dev:web
 ```
 
 Para publicar a interface pelo Express, gere a build com:
@@ -44,15 +44,33 @@ Para publicar a interface pelo Express, gere a build com:
 npm run build
 ```
 
+Ou diretamente:
+
+```bash
+npm run build:web
+```
+
 Para executar a API localmente em modo de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
+Ou diretamente:
+
+```bash
+npm run dev:api
+```
+
 ## Testes automatizados
 
-Testes de API:
+Para rodar somente os testes de API:
+
+```bash
+npm run test:api
+```
+
+Para rodar toda a suíte automatizada:
 
 ```bash
 npm test
@@ -61,7 +79,7 @@ npm test
 Ou diretamente:
 
 ```bash
-npm run test:api
+npm run test:all
 ```
 
 Testes Web end-to-end:
@@ -70,11 +88,35 @@ Testes Web end-to-end:
 npm run test:web
 ```
 
+Esse comando gera a build da interface, sobe a aplicação localmente e executa a suíte Cypress em modo headless.
+
 Para abrir o Cypress em modo interativo:
 
 ```bash
 npm run test:web:open
 ```
+
+Para gerar apenas a build usada nos testes Web:
+
+```bash
+npm run test:web:prepare
+```
+
+O relatório HTML da execução Web é gerado em `cypress/reports/index.html`.
+
+## Pipeline
+
+O repositório possui um workflow do GitHub Actions em [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
+
+Ele executa:
+
+- `npm run test:api`
+- `npm run test:web`
+
+Ao final, a pipeline publica os relatórios HTML e JSON como artefatos da execução:
+
+- `test/reports`
+- `cypress/reports`
 
 ## Estrutura do projeto
 
